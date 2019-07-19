@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         emailIntent.putExtra(Intent.EXTRA_TEXT,"Hi! I am sending you a test email");
 
         try {
-            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            startActivity(Intent.createChooser(emailIntent, "Send e-mail"));
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(MainActivity.this, "There is no email client installed.",
                     Toast.LENGTH_SHORT).show();
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            // status
             int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
 
             switch (status) {
@@ -92,10 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
                     float batPercentage = (level/(float)scale) * 100;
                     String batLevel = "Battery remaining " + (int)batPercentage + "%";
-                    Toast.makeText(context,batLevel,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mMainActivity,batLevel,Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    Toast.makeText(context,"Charging",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mMainActivity,"Charging",Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;

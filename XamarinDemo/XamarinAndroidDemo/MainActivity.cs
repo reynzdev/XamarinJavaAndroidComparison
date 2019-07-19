@@ -16,16 +16,14 @@ namespace XamarinAndroidDemo
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
 
             var emaiBtn = FindViewById<Button>(Resource.Id.emailBtn);
-            emaiBtn.Click += SendEmail;
-
             var callBtn = FindViewById<Button>(Resource.Id.callBtn);
-            callBtn.Click += Call;
-
             var batBtn = FindViewById<Button>(Resource.Id.batBtn);
+
+            emaiBtn.Click += SendEmail;
+            callBtn.Click += Call;
             batBtn.Click += CheckBatteryStatus;
         }
 
@@ -39,11 +37,20 @@ namespace XamarinAndroidDemo
         private void SendEmail(object sender, System.EventArgs e)
         {
             Intent emailIntent = new Intent(Intent.ActionSend);
+            emailIntent.SetType("text/plain");
             emailIntent.PutExtra(Intent.ExtraEmail, "johndoe@example.com");
             emailIntent.PutExtra(Intent.ExtraSubject, "Hello World!");
             emailIntent.PutExtra(Intent.ExtraText, "Hi! I am sending you a test email");
-            emailIntent.SetType("text/plain");
-            StartActivity(Intent.CreateChooser(emailIntent, "Send e-mail"));
+
+            try
+            {
+                StartActivity(Intent.CreateChooser(emailIntent, "Send e-mail"));
+            }
+            catch (ActivityNotFoundException ex)
+            {
+                Toast.MakeText(this, "There is no email client installed.",
+                    ToastLength.Short).Show();
+            }
         }
 
         private void CheckBatteryStatus(object sender, System.EventArgs e)
@@ -52,16 +59,9 @@ namespace XamarinAndroidDemo
             MyBroadcastReceiver broadcastReceiver = new MyBroadcastReceiver(this);
             RegisterReceiver(broadcastReceiver, intentFilter);
         }
-
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
-        {
-            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
-            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
-    internal class MyBroadcastReceiver : BroadcastReceiver
+    public class MyBroadcastReceiver : BroadcastReceiver
     {
         private MainActivity mainActivity;
 
